@@ -5,31 +5,36 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@JacksonXmlRootElement(localName = "whatever")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class test1
+public class AnnotatedElementIsNotTest
 {
-  private final Map<String, Object> extraProperties = new HashMap<>();
-
-  @JacksonXmlProperty(isAttribute = true)
+  @JacksonXmlProperty(
+      localName = "id",
+      isAttribute = true)
   private String id;
 
   @JacksonXmlElementWrapper(useWrapping = false)
-  private List<test1> test;
+  @JacksonXmlProperty(localName = "test")
+  private List<AnnotatedElementIsNotTest> children;
 
-  public test1()
+  public AnnotatedElementIsNotTest()
   {
   }
 
-  public test1(final String id, final List<test1> test)
+  public AnnotatedElementIsNotTest(final String id, final List<AnnotatedElementIsNotTest> children)
   {
     this.id = id;
-    this.test = test;
+    this.children = children;
   }
+
+  private final Map<String, Object> extraProperties = new HashMap<>();
 
   @JsonAnySetter
   public void addExtraProperty(final String key, final Object value)
@@ -53,13 +58,13 @@ public class test1
     this.id = id;
   }
 
-  public List<test1> getTest()
+  public List<AnnotatedElementIsNotTest> getChildren()
   {
-    return test;
+    return children;
   }
 
-  public void setTest(final List<test1> test)
+  public void setChildren(final List<AnnotatedElementIsNotTest> children)
   {
-    this.test = test;
+    this.children = children;
   }
 }
