@@ -1,7 +1,8 @@
-package pytry;
+package pytry.examples;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -10,28 +11,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@JacksonXmlRootElement(localName = "test")
-public class AnnotatedElementIsTest
+@JacksonXmlRootElement(localName = "whatever")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class AnnotatedElementIsNotTest
 {
-
-  @JacksonXmlProperty(localName = "id", isAttribute = true)
+  @JacksonXmlProperty(
+      localName = "id",
+      isAttribute = true)
   private String id;
 
-  @JacksonXmlElementWrapper(
-      localName = "test",
-      useWrapping = false)
+  @JacksonXmlElementWrapper(useWrapping = false)
   @JacksonXmlProperty(localName = "test")
-  private List<AnnotatedElementIsTest> children;
-
-  public AnnotatedElementIsTest()
-  {
-  }
-
-  public AnnotatedElementIsTest(final String id, final List<AnnotatedElementIsTest> children)
-  {
-    this.id = id;
-    this.children = children;
-  }
+  private List<AnnotatedElementIsNotTest> children;
 
   private final Map<String, Object> extraProperties = new HashMap<>();
 
@@ -57,12 +48,12 @@ public class AnnotatedElementIsTest
     this.id = id;
   }
 
-  public List<AnnotatedElementIsTest> getChildren()
+  public List<AnnotatedElementIsNotTest> getChildren()
   {
     return children;
   }
 
-  public void setChildren(final List<AnnotatedElementIsTest> children)
+  public void setChildren(final List<AnnotatedElementIsNotTest> children)
   {
     this.children = children;
   }

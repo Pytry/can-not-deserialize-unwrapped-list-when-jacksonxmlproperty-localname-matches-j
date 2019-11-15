@@ -4,9 +4,10 @@
 package pytry;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.junit.jupiter.api.Test;
+import pytry.examples.AnnotatedElementIsNotTest;
+import pytry.examples.AnnotatedElementIsTest;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JacksonExamplesTest
 {
-  private final ObjectMapper mapper = XmlMapper
+  private final XmlMapper xmlMapper = XmlMapper
       .xmlBuilder()
       .serializationInclusion(NON_NULL)
       .build();
@@ -31,6 +32,7 @@ class JacksonExamplesTest
               "<test id=\"0.3.1\"/>" +
           "</test>" +
       "</test>";
+
   private static final String xml_root_element_is_not_test =
       "<whatever id=\"0\">" +
           "<test id=\"0.1\"/>" +
@@ -43,13 +45,13 @@ class JacksonExamplesTest
   @Test
   void child_elements_cannot_have_same_localname_as_root_xml_element()
   {
-    assertThrows(JsonMappingException.class, () -> mapper.readValue(xml_root_element_is_test, AnnotatedElementIsTest.class));
+    assertThrows(JsonMappingException.class, () -> xmlMapper.readValue(xml_root_element_is_test, AnnotatedElementIsTest.class));
   }
 
   @Test
   void xml_root_can_be_different_from_annotated_root() throws Exception
   {
-    AnnotatedElementIsTest testRoot = mapper.readValue(xml_root_element_is_not_test, AnnotatedElementIsTest.class);
+    AnnotatedElementIsTest testRoot = xmlMapper.readValue(xml_root_element_is_not_test, AnnotatedElementIsTest.class);
     //ROOT//
     assertEquals(0, testRoot.getExtraProperties().size());
     assertEquals("0", testRoot.getId());
@@ -71,13 +73,13 @@ class JacksonExamplesTest
   @Test
   void child_elements_cannot_have_same_localname_as_root_xml_element_even_when_the_annotated_root_is_different()
   {
-    assertThrows(JsonMappingException.class, () -> mapper.readValue(xml_root_element_is_test, AnnotatedElementIsNotTest.class));
+    assertThrows(JsonMappingException.class, () -> xmlMapper.readValue(xml_root_element_is_test, AnnotatedElementIsNotTest.class));
   }
 
   @Test
   void when_annotated_root_and_actual_root_are_equal_then_serialization_should_work() throws Exception
   {
-    AnnotatedElementIsNotTest testRoot = mapper.readValue(xml_root_element_is_not_test, AnnotatedElementIsNotTest.class);
+    AnnotatedElementIsNotTest testRoot = xmlMapper.readValue(xml_root_element_is_not_test, AnnotatedElementIsNotTest.class);
     //ROOT//
     assertEquals(0, testRoot.getExtraProperties().size());
     assertEquals("0", testRoot.getId());
@@ -95,6 +97,6 @@ class JacksonExamplesTest
     assertEquals("0.2.1", testRoot.getChildren().get(1).getChildren().get(0).getId());
     assertNull(testRoot.getChildren().get(1).getChildren().get(0).getChildren());
     //DESERIALIZATION EQUALITY CHECK//
-    assertEquals(xml_root_element_is_not_test, mapper.writeValueAsString(testRoot));
+    assertEquals(xml_root_element_is_not_test, xmlMapper.writeValueAsString(testRoot));
   }
 }
